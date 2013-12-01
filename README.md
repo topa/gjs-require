@@ -39,3 +39,8 @@ const ExtensionUtils = require("misc/extensionUtils");
 // ...
 
 ```
+
+Quirks
+======
+
+- require.js must be placed in extenion's rool folder like extension.js.
