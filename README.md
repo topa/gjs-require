@@ -25,7 +25,7 @@ How to use
 Import gjs-require in the very first line of each script which lies under your extensions root folder, e.g. extension.js, prefs.js or each script that maybe used as entry-point.
 gjs.require will be injected in global namespace and you can just write <code>require("./lib/bli/bla/blub")</code>;
 
-```
+```javascript
 imports.misc.extensionUtils.getCurrentExtension().imports.require;
 
 const Gio = require("gi/Gio");
