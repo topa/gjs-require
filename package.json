@@ -1,0 +1,9 @@
+{
+    "name": "gjs-require",
+    "version": "0.0.1",
+    "devDependencies": {
+        "grunt": "*",
+        "grunt-shell": "*",
+        "grunt-contrib-watch": "*"
+    }
+}
