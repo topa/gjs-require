@@ -17,7 +17,7 @@ Important Notes
 ===============
 
 At this stage this small lib is very very very hacky, under heavy development and still a prove of concept. It is quite likely that gjs-require won't work for your extension. However it works for us here: https://github.com/topa/gignx.
-Please note that it is quite possible if you use gjs-require your extension will be rejected if. If you give it a try, please let us know.
+Please note that we don't know if you use gjs-require if your extension will be rejected if. Give it a try, and let us know.
 
 How to use
 ==========
@@ -42,6 +42,19 @@ const anyClass = require("./lib/foo/any/Class");
 // ...
 
 ```
+
+Running tests
+=============
+
+You need [node](http://nodejs.org/) and [npm](https://npmjs.org/) (which is part of node). Then run <code>npm install</code> which will install some grunt-tasks locally.
+You need also to install grunt-cli globally: <code> npm install -g grunt-cli</code>.
+
+``` shell
+
+grunt watch-test
+
+```
+
 
 Quirks
 ======
