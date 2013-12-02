@@ -23,6 +23,6 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-contrib-watch");
 
-    grunt.registerTask("watch-test", "watch:test");
+    grunt.registerTask("watch-test", ["shell:runTests", "watch:test"]);
 
 };
