@@ -56,9 +56,6 @@ function require(requirePath) {
         _requirePath = Gio.File.new_for_path(currentFilePath+"/"+_requirePath).get_path();
     }
 
-    global.log("\n");
-    global.log(_requirePath, requiredFilename, requiredObjectName);
-    global.log("\n");
 
     if (isGi) {
         if (!requiredFilename || requiredFilename == "gi") {
