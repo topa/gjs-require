@@ -19,10 +19,11 @@ function testPwd() {
 }
 
 // @TODO
-//function testRequireSibling() {
+function testRequireSibling() {
+//    let origin = require("./test/siblingDummy").whereAreYou();
 //    let origin = require("./siblingDummy").whereAreYou();
 //    JSUnit.assertEquals("It should import siblings", origin, "sibling");
-//}
+}
 
 // @TODO
 //function testRequireInChildFolder() {
@@ -44,11 +45,10 @@ function testRequireMainloop() {
     JSUnit.assertTrue("If should import mainloop", typeof require("mainloop").timeout_add == "function");
 }
 
-// @TODO
-//function testRequireGi() {
-//    JSUnit.assertNotUndefined("It should import gi", require("gi").Soup);
-//    JSUnit.assertNotUndefined("It should import gi", require("gi").Gtk);
-//}
+function testRequireGi() {
+    JSUnit.assertNotUndefined("It should import gi", require("gi").Soup);
+    JSUnit.assertNotUndefined("It should import gi", require("gi").Gtk);
+}
 
 function testRequireGiGObject() {
     JSUnit.assertNotUndefined("It should import gi.GObject", require("gi/GObject").Class);
@@ -70,16 +70,16 @@ function testRequireGiGtk() {
     );
 }
 
-// @TODO
+// @TODO Error: Requiring St, version none: Typelib file for namespace 'St' (any version) not found
 //function testRequireGiSt() {
 //    JSUnit.assertNotUndefined("It should import gi.St", require("gi/St").Side.Top);
 //}
 
+// @TODO Error: Requiring ShellJS, version none: Typelib file for namespace 'ShellJS' (any version) not found
 function testRequireMisc() {
-//    JSUnit.assertNotUndefined("It should import misc", require("misc"));
+    JSUnit.assertNotUndefined("It should import misc", require("misc"));
     JSUnit.assertTrue("It should import misc.params.parse", typeof require("misc/params/parse") == "function");
     JSUnit.assertTrue("It should also import misc.params.parse", typeof require("misc/params").parse == "function");
-    // @TODO
 //    JSUnit.assertTrue(
 //        "It should import misc.extensionUtils",
 //        typeof require("misc/extensionUtils/getCurrentExtension") == "function"
