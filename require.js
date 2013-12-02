@@ -1,12 +1,29 @@
 
 const Gio = imports.gi.Gio;
 
-let gnomeExtensionFrameworks = [
+/**
+ * /usr/local/share/gjs-1.0 and /usr/lib64/gjs-1.0 are by default in imports.searchPath
+ * on my Fedora 19 machine,but these folder does not exist or are empty.
+ */
+
+let gnomeShellJSLibs = [
     "/usr/share/gnome-shell/js",
-    "/usr/share/gjs-1.0",
-    "/usr/local/share/gjs-1.0",
-    "/usr/lib64/gjs-1.0"
+    "/usr/share/gnome-shell/js/extensionPrefs",
+    "/usr/share/gnome-shell/js/gdm",
+    "/usr/share/gnome-shell/js/misc",
+    "/usr/share/gnome-shell/js/perf",
+    "/usr/share/gnome-shell/js/ui",
+    "/usr/share/gnome-shell/js/ui/components",
+    "/usr/share/gnome-shell/js/ui/status"
 ];
+
+let gjsLibs = [
+    "/usr/share/gjs-1.0",
+    "/usr/share/gjs-1.0/tweener"
+];
+
+let gnomeExtensionFrameworks = gnomeShellJSLibs.concat(gjsLibs);
+
 
 for (let i = 0; gnomeExtensionFrameworks.length > i; i++) {
     let framework = gnomeExtensionFrameworks[i];
