@@ -67,7 +67,6 @@ function require(requirePath) {
 
     if (isMisc) {
         if (!requiredFilename || requiredFilename == "misc") {
-            global.log()
             requiredObject = imports.misc[requiredObjectName];
         } else {
             requiredObject = imports.misc[requiredFilename][requiredObjectName];
