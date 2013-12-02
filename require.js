@@ -6,32 +6,22 @@ const Gio = imports.gi.Gio;
  * on my Fedora 19 machine,but these folder does not exist or are empty.
  */
 
-let gnomeShellJSLibs = [
-    "/usr/share/gnome-shell/js",
-    "/usr/share/gnome-shell/js/extensionPrefs",
-    "/usr/share/gnome-shell/js/gdm",
-    "/usr/share/gnome-shell/js/misc",
-    "/usr/share/gnome-shell/js/perf",
-    "/usr/share/gnome-shell/js/ui",
-    "/usr/share/gnome-shell/js/ui/components",
-    "/usr/share/gnome-shell/js/ui/status"
+let gnomeShellJSLibs = {
+    "extensionPrefs": "/usr/share/gnome-shell/js/",
+    "gdm": "/usr/share/gnome-shell/js/",
+    "misc": "/usr/share/gnome-shell/js/",
+    "perf": "/usr/share/gnome-shell/js/",
+    "ui": "/usr/share/gnome-shell/js/",
+    "ui/components": "/usr/share/gnome-shell/js/ui/",
+    "ui/status": "/usr/share/gnome-shell/js/ui/"
+};
+
+
+let globalLibs = [
+    "gi", "extensionPrefs", "gdm", "misc", "perf", "ui/components", "ui/status", "ui",
+    "tweener", "cairo", "format", "getttext", "jsUnit", "lang", "mainloop", "promise", "signals"
 ];
 
-let gjsLibs = [
-    "/usr/share/gjs-1.0",
-    "/usr/share/gjs-1.0/tweener"
-];
-
-let gnomeExtensionFrameworks = gnomeShellJSLibs.concat(gjsLibs);
-
-
-for (let i = 0; gnomeExtensionFrameworks.length > i; i++) {
-    let framework = gnomeExtensionFrameworks[i];
-
-    if (imports.searchPath.indexOf(framework) === -1) {
-        imports.searchPath.push(framework);
-    }
-}
 
 /**
  * @see /usr/share/gnome-shell/js/misc/extensionUtils
@@ -55,55 +45,101 @@ function pwd() {
 }
 
 /**
+ * @param {string} path
+ * @returns {boolean}
+ */
+function isGlobalModule(path) {
+    let splitPath = path.split("/");
+    let module = splitPath[0];
+
+    return globalLibs.indexOf(module) > -1;
+}
+
+/**
+ * @param {string} path
+ * @returns {boolean}
+ */
+function isPathAbsolute(path) {
+    return path.search("/") === 0;
+}
+
+/**
+ * @param {string} path
+ * @returns {boolean}
+ */
+function isPathRelative(path) {
+    return path.search(".") === 0;
+}
+
+/**
+ * @param {string} path
+ * @returns {string}
+ */
+function resolvePath(path) {
+    return Gio.File.new_for_path(pwd()+"/"+path).get_path();
+}
+
+/**
  * @param {string} requirePath
- * @returns {function|Function|Object}
+ * @returns {*}
+ * @throws Error
  */
 function require(requirePath) {
-    let isAbsolute = requirePath.search("/") == 0;
-    let isGi = requirePath.search("gi") == 0;
-    let isMisc = requirePath.search("misc") == 0;
-    let splittedPath = requirePath.split("/");
-    let requiredObjectName = splittedPath.pop();
-    let requiredFilename = splittedPath.pop();
-    let requiredObject;
-    let _requirePath = splittedPath.join("/");
+    let searchPath;
+    let splitRequirePath;
+    let requiredName;
+    let requireFileName;
+    let required;
 
-    if (!isAbsolute && !isGi && !isMisc) {
-        let currentFilePath = pwd();
-        _requirePath = Gio.File.new_for_path(currentFilePath+"/"+_requirePath).get_path();
-    }
+    if (isGlobalModule(requirePath)) {
 
+        splitRequirePath = requirePath.split("/");
+        let currentSplitterName = splitRequirePath[0];
 
-    if (isGi) {
-        if (!requiredFilename || requiredFilename == "gi") {
-            requiredObject = imports.gi[requiredObjectName];
-        } else {
-            requiredObject = imports.gi[requiredFilename][requiredObjectName];
+        // create search path
+        searchPath = gnomeShellJSLibs[currentSplitterName]
+
+        // temporary add searchPath of required
+        imports.searchPath.unshift(searchPath);
+
+        required = imports[currentSplitterName]
+        for (let i = 1; splitRequirePath.length > i; i++) {
+            currentSplitterName = splitRequirePath[i];
+            required = required[currentSplitterName];
         }
+
+        // clean up searchPath
+        imports.searchPath.shift();
+
+        return required;
     }
 
-    if (isMisc) {
-        if (!requiredFilename || requiredFilename == "misc") {
-            requiredObject = imports.misc[requiredObjectName];
-        } else {
-            requiredObject = imports.misc[requiredFilename][requiredObjectName];
-        }
+    if (isPathAbsolute(requirePath) || isPathRelative(requirePath)) {
+
+        let resolvedRequirePath = resolvePath(requirePath);
+        splitRequirePath = resolvedRequirePath.split("/");
+        requiredName = splitRequirePath.pop();
+        requireFileName = splitRequirePath.pop();
+
+        // create search path
+        searchPath = (splitRequirePath.length === 0) ? "./" : splitRequirePath.join("/");
+        // temporary add searchPath of required
+        imports.searchPath.unshift(searchPath);
+
+        required = imports[requireFileName][requiredName];
+
+        // clean up searchPath
+        imports.searchPath.shift();
+
+        return required;
     }
 
-    if (!isGi && !isMisc) {
-        imports.searchPath.unshift(_requirePath);
-        if (!requiredFilename) {
-            requiredObject = imports[requiredObjectName];
-        } else {
-            requiredObject = imports[requiredFilename][requiredObjectName];
-        }
-        imports.searchPath.shift(); // clean up and don't pollute search path.
-    }
-
-
-    return requiredObject;
+    throw new Error("(require) Unable to require "+requirePath+". File not found or no global module.");
 }
 
 require.pwd = pwd;
+require.resolvePath = resolvePath;
+require.isPathAbsolute = isPathAbsolute;
+require.isPathRelative = isPathRelative;
 
 window.require = require;
