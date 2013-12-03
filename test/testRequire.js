@@ -1,7 +1,6 @@
 imports.require;
 const JSUnit = require("jsUnit");
 
-
 function testSanity() {
     JSUnit.assertTrue("It should be a function", typeof JSUnit.gjstestRun == "function");
     JSUnit.assertTrue("It should expose JSUNit's .isBlank()", JSUnit.isBlank(""));
@@ -9,33 +8,56 @@ function testSanity() {
 }
 
 function testPwd() {
-    let expectedPathSplitter = "gjs-require/test";
+    let expectedPathSplitter = "gjs-require/test/";
     let pwd = require.pwd();
     let pwdLength = pwd.length;
     let index = pwd.search(expectedPathSplitter);
     let expectedIndex = pwdLength - expectedPathSplitter.length;
 
-    JSUnit.assertEquals("It should be 'gjs-require/test'", index, expectedIndex);
+    JSUnit.assertEquals("It should be 'gjs-require/test/'", index, expectedIndex);
 }
 
-// @TODO
+function test__dirname() {
+    let expectedPathSplitter = "gjs-require/test/";
+    let dirnameLength = __dirname.length;
+    let index = __dirname.search(expectedPathSplitter);
+    let expectedIndex = dirnameLength - expectedPathSplitter.length;
+
+    JSUnit.assertEquals("It should be 'gjs-require/test/'", index, expectedIndex);
+}
+
+
 function testRequireSibling() {
-//    let origin = require("./test/siblingDummy").whereAreYou();
-//    let origin = require("./siblingDummy").whereAreYou();
-//    JSUnit.assertEquals("It should import siblings", origin, "sibling");
+    let origin = require(__dirname + "siblingDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "sibling");
 }
 
-// @TODO
-//function testRequireInChildFolder() {
-//    let origin = require("./childfolder/childFolderDummy").whereAreYou();
-//    JSUnit.assertEquals("It should import siblings", origin, "child");
-//}
+function testRequireSiblingDotSlash() {
+    let origin = require(__dirname + "./siblingDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "sibling");
+}
 
-// @TODO
-//function testRequireInParentFolder() {
-//    let origin = require("../parentDummy").whereAreYou();
-//    JSUnit.assertEquals("It should import siblings", origin, "parent");
-//}
+function testRequireInChildFolder() {
+    let origin = require(__dirname + "childfolder/childFolderDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "child");
+}
+
+function testRequireInChildFolderDotSlash() {
+    let origin = require(__dirname + "./childfolder/childFolderDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "child");
+}
+
+function testRequireInParentFolder() {
+    let origin = require(__dirname + "../parentDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "parent");
+}
+
+
+function testRequireInParentFolderDotSlash() {
+    let origin = require(__dirname + "./../parentDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "parent");
+}
+
 
 function testRequireLang() {
     JSUnit.assertNotUndefined("It should import lang", require("lang").Class);
@@ -86,4 +108,8 @@ function testRequireMisc() {
 //    )
 }
 
-JSUnit.gjstestRun(this, JSUnit.setUp, JSUnit.tearDown);
+function tearDown() {
+    imports.searchPath = [];
+}
+
+JSUnit.gjstestRun(this, JSUnit.setUp, tearDown);

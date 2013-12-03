@@ -13,15 +13,23 @@ let gnomeShellJSLibs = {
     "perf": "/usr/share/gnome-shell/js/",
     "ui": "/usr/share/gnome-shell/js/",
     "ui/components": "/usr/share/gnome-shell/js/ui/",
-    "ui/status": "/usr/share/gnome-shell/js/ui/"
+    "ui/status": "/usr/share/gnome-shell/js/ui/",
+    "tweener": "/usr/share/gjs-1.0/",
+    "cairo": "/usr/share/gjs-1.0/",
+    "format": "/usr/share/gjs-1.0/",
+    "getttext": "/usr/share/gjs-1.0/",
+    "jsUnit": "/usr/share/gjs-1.0/",
+    "lang": "/usr/share/gjs-1.0/",
+    "mainloop": "/usr/share/gjs-1.0/",
+    "promise": "/usr/share/gjs-1.0/",
+    "signals": "/usr/share/gjs-1.0/"
 };
 
 
 let globalLibs = [
     "gi", "extensionPrefs", "gdm", "misc", "perf", "ui/components", "ui/status", "ui",
-    "tweener", "cairo", "format", "getttext", "jsUnit", "lang", "mainloop", "promise", "signals"
+    "tweener", "cairo", "format", "getttext", "jsUnit", "lang", "mainloop", "promise", "signals" // /usr/share/gjs-1.0/
 ];
-
 
 /**
  * @see /usr/share/gnome-shell/js/misc/extensionUtils
@@ -41,7 +49,7 @@ function pwd() {
     let path = match[1];
     let file = Gio.File.new_for_path(path);
 
-    return file.get_parent().get_path();
+    return file.get_parent().get_path() + "/";
 }
 
 /**
@@ -76,7 +84,13 @@ function isPathRelative(path) {
  * @returns {string}
  */
 function resolvePath(path) {
-    return Gio.File.new_for_path(pwd()+"/"+path).get_path();
+    let isPwd = path.search(__dirname) === 0;
+
+    if (isPwd) {
+        path = path.replace(__dirname, "");
+    }
+
+    return Gio.File.new_for_path(__dirname+"/"+path).get_path();
 }
 
 /**
@@ -138,8 +152,11 @@ function require(requirePath) {
 }
 
 require.pwd = pwd;
-require.resolvePath = resolvePath;
-require.isPathAbsolute = isPathAbsolute;
-require.isPathRelative = isPathRelative;
+
+Object.defineProperty(window, "__dirname", {
+    get: pwd,
+    enumerable: false,
+    configurable: false
+});
 
 window.require = require;
