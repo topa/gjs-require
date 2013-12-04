@@ -36,10 +36,11 @@ const Lang = require("lang");
 const parseParams = require("misc/params/parse");
 const ExtensionUtils = require("misc/extensionUtils");
 
-// Note: lib and foo are folders, any is the filename, Class is a function or a const
-const anyClass = require("./lib/foo/any/Class");
 
-// ...
+const ChildClass = require(__dirname + "./child/class");
+const ParentClass = require(__dirname + "../../parent/class);
+const SiblingClass = require(__dirname + "./class")
+
 
 ```
 
