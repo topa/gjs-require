@@ -38,8 +38,8 @@ const ExtensionUtils = require("misc/extensionUtils");
 
 
 const ChildClass = require(__dirname + "./child/class");
-const ParentClass = require(__dirname + "../../parent/class);
-const SiblingClass = require(__dirname + "./class")
+const ParentClass = require(__dirname + "../../parent/class)";
+const SiblingClass = require(__dirname + "./class");
 
 
 ```
