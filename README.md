@@ -16,8 +16,8 @@ But for us the most important reason: We need to run code idependently from exte
 Important Notes
 ===============
 
-At this stage this small lib is very very very hacky, under heavy development and still a prove of concept. It is quite likely that gjs-require won't work for your extension. However it works for us here: https://github.com/topa/gignx.
-Please note that we don't know if you use gjs-require if your extension will be rejected if. Give it a try, and let us know.
+At this stage this small lib is very hacky and under heavy development. It is still possible that gjs-require won't work for your extension. However it works for us here: https://github.com/topa/gignx.
+Please note that we don't know in case you use gjs-require in your extension if it could be rejected. Give it a try, and let us know.
 
 How to use
 ==========
@@ -60,3 +60,4 @@ Quirks
 ======
 
 - gjs-require must be placed in extenion's rool folder like extension.js.
+- It is not really possible to require relative. You will always need <code>__dirname</code>. However writing a require path like this <code>require(__dirname + "../relative")</code> is supported.
