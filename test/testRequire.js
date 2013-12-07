@@ -92,20 +92,10 @@ function testRequireGiGtk() {
     );
 }
 
-// @TODO Error: Requiring St, version none: Typelib file for namespace 'St' (any version) not found
-//function testRequireGiSt() {
-//    JSUnit.assertNotUndefined("It should import gi.St", require("gi/St").Side.Top);
-//}
-
-// @TODO Error: Requiring ShellJS, version none: Typelib file for namespace 'ShellJS' (any version) not found
 function testRequireMisc() {
     JSUnit.assertNotUndefined("It should import misc", require("misc"));
     JSUnit.assertTrue("It should import misc.params.parse", typeof require("misc/params/parse") == "function");
     JSUnit.assertTrue("It should also import misc.params.parse", typeof require("misc/params").parse == "function");
-//    JSUnit.assertTrue(
-//        "It should import misc.extensionUtils",
-//        typeof require("misc/extensionUtils/getCurrentExtension") == "function"
-//    )
 }
 
 function tearDown() {
