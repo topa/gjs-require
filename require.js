@@ -111,12 +111,12 @@ function require(requirePath) {
         let currentSplitterName = splitRequirePath[0];
 
         // create search path
-        searchPath = gnomeShellJSLibs[currentSplitterName]
+        searchPath = gnomeShellJSLibs[currentSplitterName];
 
         // temporary add searchPath of required
         imports.searchPath.unshift(searchPath);
 
-        required = imports[currentSplitterName]
+        required = imports[currentSplitterName];
         for (let i = 1; splitRequirePath.length > i; i++) {
             currentSplitterName = splitRequirePath[i];
             required = required[currentSplitterName];
