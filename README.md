@@ -16,14 +16,14 @@ But for us the most important reason: We need to run code idependently from exte
 Important Notes
 ===============
 
-At this stage this small lib is very hacky and under heavy development. It is still possible that gjs-require won't work for your extension. However it works for us here: https://github.com/topa/gignx.
-Please note that we don't know in case you use gjs-require in your extension if it could be rejected. Give it a try, and let us know.
+At this stage this small lib is very very very hacky, under heavy development and still a prove of concept. It is quite likely that gjs-require won't work for your extension. However it works for us here: https://github.com/topa/gignx.
+Please note that we don't know if you use gjs-require if your extension will be rejected if. Give it a try, and let us know.
 
 How to use
 ==========
 
 Import gjs-require in the very first line of each script which lies under your extensions root folder, e.g. extension.js, prefs.js or each script that maybe used as entry-point.
-gjs.require will be injected in global namespace and you can just write <code>require(__dirname + "./lib/bli/bla/blub")</code>;
+gjs.require will be injected in global namespace and you can just write <code>require("./lib/bli/bla/blub")</code>;
 
 ```javascript
 imports.misc.extensionUtils.getCurrentExtension().imports.require;
@@ -36,11 +36,10 @@ const Lang = require("lang");
 const parseParams = require("misc/params/parse");
 const ExtensionUtils = require("misc/extensionUtils");
 
+// Note: lib and foo are folders, any is the filename, Class is a function or a const
+const anyClass = require("./lib/foo/any/Class");
 
-const ChildClass = require(__dirname + "./child/class");
-const ParentClass = require(__dirname + "../../parent/class)";
-const SiblingClass = require(__dirname + "./class");
-
+// ...
 
 ```
 
@@ -61,4 +60,7 @@ Quirks
 ======
 
 - gjs-require must be placed in extenion's rool folder like extension.js.
-- It is not really possible to require relative. You will always need <code>__dirname</code>. However writing a require path like this <code>require(__dirname + "../relative")</code> is supported.
+- It is not possible to require scripts with gjs-console that rely on gi.St or ShellJS. However requiring those libs/files will work within your extension.
+  - @see for further information:
+    - https://mail.gnome.org/archives/javascript-list/2012-January/msg00001.html
+    - http://stackoverflow.com/questions/8700347/use-of-shell-object-in-gjs
