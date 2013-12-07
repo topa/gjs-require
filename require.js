@@ -80,32 +80,39 @@ function isPathRelative(path) {
 }
 
 /**
- * @param {string} path
+ * @param {string} searchPath
+ * @param {string} requirePath
  * @returns {string}
  */
-function resolvePath(path) {
-    let isPwd = path.search(__dirname) === 0;
+function resolvePath(searchPath, requirePath) {
+//    let isPwd = path.search(__dirname) === 0;
 
-    if (isPwd) {
-        path = path.replace(__dirname, "");
-    }
+//    if (isPwd) {
+//        path = path.replace(__dirname, "");
+//    }
 
-    return Gio.File.new_for_path(__dirname+"/"+path).get_path();
+    return Gio.File.new_for_path(searchPath+"/"+requirePath).get_path();
 }
 
 /**
+ * @param {string} searchPath
  * @param {string} requirePath
  * @returns {*}
  * @throws Error
  */
-function require(requirePath) {
-    let searchPath;
+function require(searchPath, requirePath) {
     let splitRequirePath;
     let requiredName;
     let requireFileName;
     let required;
+    let isGlobalModule;
 
-    if (isGlobalModule(requirePath)) {
+    if (!requirePath && searchPath) {
+        isGlobalModule = true;
+        requirePath = searchPath;
+    }
+
+    if (isGlobalModule) {
 
         splitRequirePath = requirePath.split("/");
         let currentSplitterName = splitRequirePath[0];
@@ -128,21 +135,67 @@ function require(requirePath) {
         return required;
     }
 
-    if (isPathAbsolute(requirePath) || isPathRelative(requirePath)) {
+    if (!isGlobalModule) {
 
-        let resolvedRequirePath = resolvePath(requirePath);
-        splitRequirePath = resolvedRequirePath.split("/");
-        requiredName = splitRequirePath.pop();
-        requireFileName = splitRequirePath.pop();
+        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/cli/myModule
+        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/cli
+        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/cli.js
+        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/folder1/folder2
 
-        // create search path
-        searchPath = (splitRequirePath.length === 0) ? "./" : splitRequirePath.join("/");
-        // temporary add searchPath of required
+        let hasJSPostfix = requirePath.search(".js") > -1;
+
+        if (!hasJSPostfix) {
+            requirePath += ".js";
+        }
+
+        let requiredFileOrFolder = Gio.File.new_for_path(searchPath + "/" + requirePath);
+        let fullRequirePath = requiredFileOrFolder.get_path();
+        let isFolder;
+        let isFile;
+        let isModule;
+
+        splitRequirePath = fullRequirePath.split("/");
+
+        if (requiredFileOrFolder.query_exists(null)) {
+            let requiredInfo = requiredFileOrFolder.query_info('standard::type', Gio.FileQueryInfoFlags.NONE, null);
+            let fileType = requiredInfo.get_file_type();
+
+            isFile = fileType === Gio.FileType.REGULAR;
+            isFolder = fileType === Gio.FileType.DIRECTORY;
+        } else {
+            // module or does not exist
+            let tmpSplitRequirePath = Array.prototype.slice.call(fullRequirePath, 0);
+            tmpSplitRequirePath.pop();
+            let tmoFullRequirePath = tmpSplitRequirePath.join("/");
+            let tmpRequiredFileOrFolder =  Gio.File.new_for_path(tmoFullRequirePath);
+
+            if (tmpRequiredFileOrFolder.query_exists(null)) {
+                isModule = true;
+            } else {
+                throw new Error("Does not exists");
+            }
+        }
+
+
+        if (isModule) {
+            requiredName = splitRequirePath.pop();
+            requireFileName = splitRequirePath.pop().replace(".js", "");
+            searchPath = splitRequirePath.join("/");
+        }
+
+        if (isFile || isFolder) {
+            requireFileName = splitRequirePath.pop().replace(".js", "");
+            searchPath = splitRequirePath.join("/");
+        }
+
         imports.searchPath.unshift(searchPath);
 
-        required = imports[requireFileName][requiredName];
+        if (isModule) {
+            required = imports[requireFileName][requiredName];
+        } else {
+            required = imports[requireFileName];
+        }
 
-        // clean up searchPath
         imports.searchPath.shift();
 
         return required;

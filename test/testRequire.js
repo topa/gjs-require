@@ -28,36 +28,50 @@ function test__dirname() {
 
 
 function testRequireSibling() {
-    let origin = require(__dirname + "siblingDummy").whereAreYou();
+    let origin = require(__dirname, "siblingDummy").whereAreYou();
     JSUnit.assertEquals("It should import siblings", origin, "sibling");
 }
 
 function testRequireSiblingDotSlash() {
-    let origin = require(__dirname + "./siblingDummy").whereAreYou();
+    let origin = require(__dirname, "./siblingDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "sibling");
+}
+
+function testRequireSiblingJSPostfix() {
+    let origin = require(__dirname, "siblingDummy.js").whereAreYou();
     JSUnit.assertEquals("It should import siblings", origin, "sibling");
 }
 
 function testRequireInChildFolder() {
-    let origin = require(__dirname + "childfolder/childFolderDummy").whereAreYou();
+    let origin = require(__dirname, "childfolder/childFolderDummy").whereAreYou();
     JSUnit.assertEquals("It should import siblings", origin, "child");
 }
 
 function testRequireInChildFolderDotSlash() {
-    let origin = require(__dirname + "./childfolder/childFolderDummy").whereAreYou();
+    let origin = require(__dirname, "./childfolder/childFolderDummy").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "child");
+}
+
+function testRequireInChildFolderDotSlashJSPostfix() {
+    let origin = require(__dirname, "./childfolder/childFolderDummy.js").whereAreYou();
     JSUnit.assertEquals("It should import siblings", origin, "child");
 }
 
 function testRequireInParentFolder() {
-    let origin = require(__dirname + "../parentDummy").whereAreYou();
+    let origin = require(__dirname, "../parentDummy").whereAreYou();
     JSUnit.assertEquals("It should import siblings", origin, "parent");
 }
 
 
 function testRequireInParentFolderDotSlash() {
-    let origin = require(__dirname + "./../parentDummy").whereAreYou();
+    let origin = require(__dirname, "./../parentDummy").whereAreYou();
     JSUnit.assertEquals("It should import siblings", origin, "parent");
 }
 
+function testRequireInParentFolderDotSlashJSPostfix() {
+    let origin = require(__dirname, "./../parentDummy.js").whereAreYou();
+    JSUnit.assertEquals("It should import siblings", origin, "parent");
+}
 
 function testRequireLang() {
     JSUnit.assertNotUndefined("It should import lang", require("lang").Class);
