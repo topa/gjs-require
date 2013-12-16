@@ -50,43 +50,7 @@ const pwd = function () {
     let file = Gio.File.new_for_path(path);
 
     return file.get_parent().get_path() + "/";
-}
-
-/**
- * @param {string} path
- * @returns {boolean}
- */
-function isGlobalModule(path) {
-    let splitPath = path.split("/");
-    let module = splitPath[0];
-
-    return globalLibs.indexOf(module) > -1;
-}
-
-/**
- * @param {string} path
- * @returns {boolean}
- */
-function isPathAbsolute(path) {
-    return path.search("/") === 0;
-}
-
-/**
- * @param {string} path
- * @returns {boolean}
- */
-function isPathRelative(path) {
-    return path.search(".") === 0;
-}
-
-/**
- * @param {string} searchPath
- * @param {string} requirePath
- * @returns {string}
- */
-function resolvePath(searchPath, requirePath) {
-    return Gio.File.new_for_path(searchPath+"/"+requirePath).get_path();
-}
+};
 
 /**
  * @param {string} searchPath
@@ -194,6 +158,7 @@ const require = function(searchPath, requirePath) {
 }
 
 const injectGlobal = function() {
+
     Object.defineProperty(window, "__dirname", {
         get: pwd,
         enumerable: false,
@@ -203,4 +168,4 @@ const injectGlobal = function() {
     window.require = require;
 
     window.pwd = pwd;
-}
+};
