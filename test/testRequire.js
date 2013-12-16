@@ -36,87 +36,96 @@ function test___dirname() {
 
 function test_require_sibling() {
     let siblingPath = require(__dirname, "siblingModule").whereAreYou();
-    JSUnit.assertEquals("It should import siblings", siblingPath, __dirname);
+    JSUnit.assertEquals("It should require siblings", siblingPath, __dirname);
 }
 
 function test_require_sibling_with_dot_slash() {
     let siblingPath = require(__dirname, "./siblingModule").whereAreYou();
-    JSUnit.assertEquals("It should import siblings defined relative to __driname", siblingPath, __dirname);
+    JSUnit.assertEquals("It should require siblings defined relative to __driname", siblingPath, __dirname);
 }
 
 function test_require_sibling_with_js_postfix() {
     let siblingPath = require(__dirname, "siblingModule.js").whereAreYou();
-    JSUnit.assertEquals("It should import siblings with '.js' as postfix", siblingPath, __dirname);
+    JSUnit.assertEquals("It should require siblings with '.js' as postfix", siblingPath, __dirname);
 }
 
 function test_require_from_child_folder() {
     let childPath = require(__dirname, "child/module").whereAreYou();
-    JSUnit.assertEquals("It should import childs", childPath, __dirname + "child/");
+    JSUnit.assertEquals("It should require child modules", childPath, __dirname + "child/");
 }
 
 function test_require__from_child_folder_with_dot_slash() {
     let childPath = require(__dirname, "./child/module").whereAreYou();
-    JSUnit.assertEquals("It should import childs", childPath, __dirname + "child/");
+    JSUnit.assertEquals("It should require child modules defined relative to __dirname", childPath, __dirname + "child/");
 }
 
 function test_require_from_child_folder_with_dot_slash_and_js_postfix() {
     let childPath = require(__dirname, "./child/module.js").whereAreYou();
-    JSUnit.assertEquals("It should import childs", childPath, __dirname + "child/");
+    JSUnit.assertEquals("It should require child modules with '.js' as postfix", childPath, __dirname + "child/");
 }
 
-function testRequireInParentFolder() {
-    let origin = require(__dirname, "../parentModule").whereAreYou();
-    JSUnit.assertEquals("It should import siblings", origin, "parent");
+function test_require_from_parent_folder() {
+    let parentPath = require(__dirname, "../parentModule").whereAreYou();
+    JSUnit.assertEquals("It should require modules from a parent folder", parentPath, __dirname.replace("test/", ""));
 }
 
-
-function testRequireInParentFolderDotSlash() {
-    let origin = require(__dirname, "./../parentModule").whereAreYou();
-    JSUnit.assertEquals("It should import siblings", origin, "parent");
+function test_require_from_parent_folder_with_dot_slash() {
+    let parentPath = require(__dirname, "./../parentModule").whereAreYou();
+    JSUnit.assertEquals(
+        "It should require modules from parent folder defined relative to __dirname",
+        parentPath,
+        __dirname.replace("test/", "")
+    );
 }
 
-function testRequireInParentFolderDotSlashJSPostfix() {
-    let origin = require(__dirname, "./../parentModule.js").whereAreYou();
-    JSUnit.assertEquals("It should import siblings", origin, "parent");
+function test_require_from_parent_folder_with_dot_slash_and_js_as_postfix() {
+    let parentPath = require(__dirname, "./../parentModule.js").whereAreYou();
+    JSUnit.assertEquals(
+        "It should require parent modules with '.js' as postfix",
+        parentPath, __dirname.replace("test/", "")
+    );
 }
 
-function testRequireLang() {
-    JSUnit.assertNotUndefined("It should import lang", require("lang").Class);
+function test_require_global_module_lang() {
+    JSUnit.assertNotUndefined("It should require global module lang", require("lang").Class);
 }
 
-function testRequireMainloop() {
-    JSUnit.assertTrue("If should import mainloop", typeof require("mainloop").timeout_add == "function");
+function test_require_global_module_mainloop() {
+    JSUnit.assertTrue("If should require global module mainloop", typeof require("mainloop").timeout_add == "function");
 }
 
-function testRequireGi() {
-    JSUnit.assertNotUndefined("It should import gi", require("gi").Soup);
-    JSUnit.assertNotUndefined("It should import gi", require("gi").Gtk);
+function test_require_global_module_gi() {
+    JSUnit.assertNotUndefined("It should require global module gi", require("gi").Soup);
 }
 
-function testRequireGiGObject() {
-    JSUnit.assertNotUndefined("It should import gi.GObject", require("gi/GObject").Class);
+function test_require_gi_GObject() {
+    JSUnit.assertNotUndefined("It should require global module gi.GObject", require("gi/GObject").Class);
 }
 
-function testRequireGiGio() {
-    JSUnit.assertNotUndefined("It should import gi.Gio", require("gi/Gio"));
+function test_require_gi_Gio() {
     JSUnit.assertTrue(
-        "It should import go.Gio.SettingsSchemaSource",
+        "It should require global module go.Gio.SettingsSchemaSource",
         typeof require("gi/Gio/SettingsSchemaSource").get_default == "function"
     );
 }
 
-function testRequireGiGtk() {
-    JSUnit.assertNotUndefined("It should import gi.Gtk", require("gi/Gtk").IconTheme);
+function test_require_gi_Gtk() {
     JSUnit.assertTrue(
-        "It should import gi.Gtk.IconTheme.get_default()",
+        "It should require global module gi.Gtk.IconTheme.get_default()",
         typeof require("gi/Gtk/IconTheme").get_default == "function"
     );
 }
 
-function testRequireMisc() {
-    JSUnit.assertNotUndefined("It should import misc", require("misc"));
-    JSUnit.assertTrue("It should import misc.params.parse", typeof require("misc/params/parse") == "function");
-    JSUnit.assertTrue("It should also import misc.params.parse", typeof require("misc/params").parse == "function");
+function test_require_misc() {
+    JSUnit.assertNotUndefined("It should require global module misc", require("misc"));
+    JSUnit.assertTrue(
+        "It should require global module misc.params.parse",
+        typeof require("misc/params/parse") == "function"
+    );
+    JSUnit.assertTrue(
+        "It should require global module misc.params.parse",
+        typeof require("misc/params").parse == "function"
+    );
 }
 
 function tearDown() {
