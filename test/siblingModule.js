@@ -1,4 +1,4 @@
 
 function whereAreYou() {
-    return "child";
+    return __dirname;
 }

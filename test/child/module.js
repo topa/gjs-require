@@ -1,4 +1,4 @@
 
 function whereAreYou() {
-    return "sibling";
+    return dirname();
 }
