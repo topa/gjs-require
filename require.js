@@ -155,7 +155,7 @@ const require = function(searchPath, requirePath) {
     }
 
     throw new Error("(require) Unable to require "+requirePath+". File not found or no global module.");
-}
+};
 
 const injectGlobal = function() {
 
