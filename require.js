@@ -103,51 +103,38 @@ const require = function(searchPath, requirePath) {
 
         let requiredFileOrFolder = Gio.File.new_for_path(searchPath + "/" + requirePath);
         let fullRequirePath = requiredFileOrFolder.get_path();
-        let isFolder;
-        let isFile;
-        let isModule;
+        let fileOrFolder = _createFile(searchPath, requirePath);
 
         splitRequirePath = fullRequirePath.split("/");
 
-        if (requiredFileOrFolder.query_exists(null)) {
-            let requiredInfo = requiredFileOrFolder.query_info('standard::type', Gio.FileQueryInfoFlags.NONE, null);
-            let fileType = requiredInfo.get_file_type();
-
-            isFile = fileType === Gio.FileType.REGULAR;
-            isFolder = fileType === Gio.FileType.DIRECTORY;
+        if (_exists(fileOrFolder) && _isFileOrFolder(fileOrFolder)) {
+            requireFileName = splitRequirePath.pop().replace(".js", "");
+            searchPath = splitRequirePath.join("/");
         } else {
-            // module or does not exist
-            let tmpSplitRequirePath = Array.prototype.slice.call(fullRequirePath, 0);
-            tmpSplitRequirePath.pop();
-            let tmoFullRequirePath = tmpSplitRequirePath.join("/");
-            let tmpRequiredFileOrFolder =  Gio.File.new_for_path(tmoFullRequirePath);
-
-            if (tmpRequiredFileOrFolder.query_exists(null)) {
-                isModule = true;
+            /*
+            let file = fileOrFolder.get_parent();
+            // It must be module/file
+            if (_exists(file)) {
+                requiredName = splitRequirePath.pop();
+                requireFileName = splitRequirePath.pop().replace(".js", "");
+                searchPath = splitRequirePath.join("/");
             } else {
-                throw new Error("Does not exists");
+                throw new Error("(gjs-require) Can't require module. There is no module at " + file.get_path());
             }
-        }
-
-
-        if (isModule) {
-            requiredName = splitRequirePath.pop();
-            requireFileName = splitRequirePath.pop().replace(".js", "");
-            searchPath = splitRequirePath.join("/");
-        }
-
-        if (isFile || isFolder) {
-            requireFileName = splitRequirePath.pop().replace(".js", "");
-            searchPath = splitRequirePath.join("/");
+            */
         }
 
         imports.searchPath.unshift(searchPath);
 
+        required = imports[requireFileName];
+
+        /*
         if (isModule) {
             required = imports[requireFileName][requiredName];
         } else {
             required = imports[requireFileName];
         }
+        */
 
         imports.searchPath.shift();
 
@@ -172,3 +159,51 @@ const injectGlobal = function() {
 
     window.require = require;
 };
+
+/**
+ * @param {string} searchPath
+ * @param {string} requirePath
+ * @returns {Gio.File}
+ * @protected
+ */
+function _createFile(searchPath, requirePath) {
+    let file = Gio.File.new_for_path(searchPath + "/" + requirePath);
+
+    return file;
+}
+
+/**
+ * @TODO Add link to Gio.FileType-consts
+ * @param {Gio.File} fileOrFolder
+ * @returns {number}
+ * @protected
+ */
+function _getFileType(fileOrFolder) {
+    let fileInfo = fileOrFolder.query_info('standard::type', Gio.FileQueryInfoFlags.NONE, null);
+    let fileType = fileInfo.get_file_type();
+
+    return fileType;
+}
+
+/**
+ * @param {Gio.File} file
+ * @returns {boolean}
+ * @protected
+ */
+function _isFileOrFolder(file) {
+    let fileType = _getFileType(file);
+    let isFileOrFolder = ((fileType === Gio.FileType.REGULAR) || (fileType === Gio.FileType.DIRECTORY));
+
+    return isFileOrFolder;
+}
+
+/**
+ * @param {Gio.File} fileOrFolder
+ * @returns {boolean}
+ * @protected
+ */
+function _exists(fileOrFolder) {
+    let exists = fileOrFolder.query_exists(null);
+
+    return exists;
+}
