@@ -11,14 +11,14 @@ function testSanity() {
 
 function testInjectGlobal() {
     JSUnit.assertEquals("It should be the same require", Require.require, require);
-    JSUnit.assertEquals("It should be the same pwd", Require.pwd, pwd);
-    JSUnit.assertEquals("It should be the same dir name", __dirname, Require.pwd());
+    JSUnit.assertEquals("It should be the same pwd", Require.dirname, dirname);
+    JSUnit.assertEquals("It should be the same dir name", __dirname, Require.dirname());
 }
 
-function testPwd() {
+function testDirname() {
     let expectedPathSplitter = "gjs-require/test/";
-    let pwdLength = pwd().length;
-    let index = pwd().search(expectedPathSplitter);
+    let pwdLength = dirname().length;
+    let index = dirname().search(expectedPathSplitter);
     let expectedIndex = pwdLength - expectedPathSplitter.length;
 
     JSUnit.assertEquals("It should be 'gjs-require/test/'", index, expectedIndex);

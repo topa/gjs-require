@@ -36,7 +36,7 @@ let globalLibs = [
  * @see http://stackoverflow.com/questions/10093102/how-to-set-a-including-path-in-the-gjs-code
  * @returns {string}
  */
-const pwd = function () {
+const dirname = function () {
     let stack = (new Error()).stack;
     let stackLine = stack.split('\n')[1];
     if (!stackLine)
@@ -160,12 +160,12 @@ const require = function(searchPath, requirePath) {
 const injectGlobal = function() {
 
     Object.defineProperty(window, "__dirname", {
-        get: pwd,
+        get: dirname,
         enumerable: false,
         configurable: false
     });
 
-    window.require = require;
+    window.dirname = dirname;
 
-    window.pwd = pwd;
+    window.require = require;
 };
