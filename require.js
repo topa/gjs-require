@@ -36,7 +36,7 @@ let globalLibs = [
  * @see http://stackoverflow.com/questions/10093102/how-to-set-a-including-path-in-the-gjs-code
  * @returns {string}
  */
-function pwd() {
+const pwd = function () {
     let stack = (new Error()).stack;
     let stackLine = stack.split('\n')[1];
     if (!stackLine)
@@ -85,12 +85,6 @@ function isPathRelative(path) {
  * @returns {string}
  */
 function resolvePath(searchPath, requirePath) {
-//    let isPwd = path.search(__dirname) === 0;
-
-//    if (isPwd) {
-//        path = path.replace(__dirname, "");
-//    }
-
     return Gio.File.new_for_path(searchPath+"/"+requirePath).get_path();
 }
 
@@ -100,7 +94,7 @@ function resolvePath(searchPath, requirePath) {
  * @returns {*}
  * @throws Error
  */
-function require(searchPath, requirePath) {
+const require = function(searchPath, requirePath) {
     let splitRequirePath;
     let requiredName;
     let requireFileName;
@@ -136,11 +130,6 @@ function require(searchPath, requirePath) {
     }
 
     if (!isGlobalModule) {
-
-        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/cli/myModule
-        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/cli
-        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/cli.js
-        // /home/topa/Workspace/gjs-require/node_modules/grunt/lib/grunt/folder1/folder2
 
         let hasJSPostfix = requirePath.search(".js") > -1;
 
@@ -204,12 +193,14 @@ function require(searchPath, requirePath) {
     throw new Error("(require) Unable to require "+requirePath+". File not found or no global module.");
 }
 
-require.pwd = pwd;
+const injectGlobal = function() {
+    Object.defineProperty(window, "__dirname", {
+        get: pwd,
+        enumerable: false,
+        configurable: false
+    });
 
-Object.defineProperty(window, "__dirname", {
-    get: pwd,
-    enumerable: false,
-    configurable: false
-});
+    window.require = require;
 
-window.require = require;
+    window.pwd = pwd;
+}

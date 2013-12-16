@@ -1,17 +1,23 @@
-imports.require;
+imports.require.injectGlobal();
+
+const Require = imports.require;
 const JSUnit = require("jsUnit");
 
 function testSanity() {
-    JSUnit.assertTrue("It should be a function", typeof JSUnit.gjstestRun == "function");
-    JSUnit.assertTrue("It should expose JSUNit's .isBlank()", JSUnit.isBlank(""));
+    JSUnit.assertTrue("It should expose JSUnit's gjstestRun", typeof JSUnit.gjstestRun == "function");
+    JSUnit.assertTrue("It should expose JSUnit's .isBlank()", JSUnit.isBlank(""));
     JSUnit.assertEquals("It should expose JSUnit's .trim()", JSUnit.trim(" A "), "A");
+}
+
+function testInjectGlobal() {
+    JSUnit.assertEquals("It should be the same require", Require.require, require);
+    JSUnit.assertEquals("It should be the same pwd", Require.pwd, pwd);
 }
 
 function testPwd() {
     let expectedPathSplitter = "gjs-require/test/";
-    let pwd = require.pwd();
-    let pwdLength = pwd.length;
-    let index = pwd.search(expectedPathSplitter);
+    let pwdLength = pwd().length;
+    let index = pwd().search(expectedPathSplitter);
     let expectedIndex = pwdLength - expectedPathSplitter.length;
 
     JSUnit.assertEquals("It should be 'gjs-require/test/'", index, expectedIndex);
