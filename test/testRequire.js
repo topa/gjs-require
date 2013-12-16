@@ -12,6 +12,7 @@ function testSanity() {
 function testInjectGlobal() {
     JSUnit.assertEquals("It should be the same require", Require.require, require);
     JSUnit.assertEquals("It should be the same pwd", Require.pwd, pwd);
+    JSUnit.assertEquals("It should be the same dir name", __dirname, Require.pwd());
 }
 
 function testPwd() {
