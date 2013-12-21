@@ -101,13 +101,12 @@ const require = function(searchPath, requirePath) {
             requirePath += ".js";
         }
 
-        let requiredFileOrFolder = Gio.File.new_for_path(searchPath + "/" + requirePath);
-        let fullRequirePath = requiredFileOrFolder.get_path();
         let fileOrFolder = _createFile(searchPath, requirePath);
 
-        splitRequirePath = fullRequirePath.split("/");
-
         if (_exists(fileOrFolder) && _isFileOrFolder(fileOrFolder)) {
+            let fileOrFolderPath = fileOrFolder.get_path();
+
+            splitRequirePath = fileOrFolderPath.split("/");
             requireFileName = splitRequirePath.pop().replace(".js", "");
             searchPath = splitRequirePath.join("/");
         } else {
