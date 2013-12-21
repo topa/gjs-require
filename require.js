@@ -60,7 +60,6 @@ const dirname = function () {
  */
 const require = function(searchPath, requirePath) {
     let splitRequirePath;
-    let requiredName;
     let requireFileName;
     let required;
     let isGlobalModule;
@@ -107,33 +106,14 @@ const require = function(searchPath, requirePath) {
             let fileOrFolderPath = fileOrFolder.get_path();
 
             splitRequirePath = fileOrFolderPath.split("/");
-            requireFileName = splitRequirePath.pop().replace(".js", "");
+            requireFileName = splitRequirePath.pop();
+            requireFileName = requireFileName.replace(".js", "");
             searchPath = splitRequirePath.join("/");
-        } else {
-            /*
-            let file = fileOrFolder.get_parent();
-            // It must be module/file
-            if (_exists(file)) {
-                requiredName = splitRequirePath.pop();
-                requireFileName = splitRequirePath.pop().replace(".js", "");
-                searchPath = splitRequirePath.join("/");
-            } else {
-                throw new Error("(gjs-require) Can't require module. There is no module at " + file.get_path());
-            }
-            */
         }
 
         imports.searchPath.unshift(searchPath);
 
         required = imports[requireFileName];
-
-        /*
-        if (isModule) {
-            required = imports[requireFileName][requiredName];
-        } else {
-            required = imports[requireFileName];
-        }
-        */
 
         imports.searchPath.shift();
 
