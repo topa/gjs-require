@@ -120,7 +120,7 @@ const require = function(searchPath, requirePath) {
         return required;
     }
 
-    throw new Error("(require) Unable to require "+requirePath+". File not found or no global module.");
+    throw new Error("(require) Unable to require "+searchPath + requirePath+". File not found or no global module.");
 };
 
 /**
