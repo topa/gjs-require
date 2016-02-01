@@ -116,18 +116,6 @@ function test_require_gi_Gtk() {
     );
 }
 
-function test_require_misc() {
-    JSUnit.assertNotUndefined("It should require global module misc", require("misc"));
-    JSUnit.assertTrue(
-        "It should require global module misc.params.parse",
-        typeof require("misc/params/parse") == "function"
-    );
-    JSUnit.assertTrue(
-        "It should require global module misc.params.parse",
-        typeof require("misc/params").parse == "function"
-    );
-}
-
 function tearDown() {
     imports.searchPath = [];
 }

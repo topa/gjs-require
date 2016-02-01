@@ -9,7 +9,7 @@ const Gio = imports.gi.Gio;
 let gnomeShellJSLibs = {
     "extensionPrefs": "/usr/share/gnome-shell/js/",
     "gdm": "/usr/share/gnome-shell/js/",
-    "misc": "/usr/share/gnome-shell/js/",
+    "misc": "resource:///org/gnome/shell/misc/",
     "perf": "/usr/share/gnome-shell/js/",
     "ui": "/usr/share/gnome-shell/js/",
     "ui/components": "/usr/share/gnome-shell/js/ui/",
@@ -20,7 +20,7 @@ let gnomeShellJSLibs = {
     "getttext": "/usr/share/gjs-1.0/",
     "jsUnit": "/usr/share/gjs-1.0/",
     "lang": "/usr/share/gjs-1.0/",
-    "mainloop": "/usr/share/gjs-1.0/",
+    "mainloop": "resource:///org/gnome/gjs/modules/",
     "promise": "/usr/share/gjs-1.0/",
     "signals": "/usr/share/gjs-1.0/"
 };
